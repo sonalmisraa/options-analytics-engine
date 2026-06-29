@@ -1,122 +1,52 @@
-# Options Dash
+# Options Analytics & Backtesting Engine
 
 ![Python](https://img.shields.io/badge/Python-3.9%2B-blue)
 ![Django](https://img.shields.io/badge/Django-Backend-green)
-![Bootstrap](https://img.shields.io/badge/Bootstrap-Frontend-purple)
-![License](https://img.shields.io/github/license/amanu242006/Options-Dash)
+![Pandas](https://img.shields.io/badge/Pandas-Data%20Processing-orange)
+![License](https://img.shields.io/github/license/Garvit423/options-fiesta)
 
-> **Options Dash** is a **web-based analytics dashboard** for options traders, analysts, and researchers.  
-> It provides tools to calculate **Implied Volatility (IV)**, compute **Options Greeks**, and backtest popular strategies.
+**Options Analytics Engine** is a comprehensive, web-based quantitative dashboard designed for modeling derivatives, calculating Implied Volatility (IV), computing the Greeks, and backtesting delta-neutral trading strategies. 
 
-## Installation
+Built with a Django backend and a dynamic frontend, the engine ingests raw options chain CSV data, processes it via memory-efficient Pandas pipelines, and serves the analytics through RESTful endpoints.
 
-### **Prerequisites**
-- Python **3.9+**
-- `pip`
-- `git`
+## Key Features
 
-### **Setup**
-```bash
-# Clone the repository
-git clone https://github.com/amanu242006/Options-Dash.git
-cd Options-Dash
+* **Implied Volatility (IV) Modeling:** * Solves for volatility (σ) using the Black-Scholes pricing model.
+    * Utilizes SciPy's numerical root-finding algorithms (Brent's method) to match observed market premiums to theoretical model prices.
+    * Generates interactive, time-series IV plots filtered by date ranges and option types.
+* **Dynamic Options Greeks Calculator:**
+    * Computes first and second-order partial derivatives (Δ, Γ, Θ, Vega, ρ) directly from the Black-Scholes equation.
+    * Implements server-side caching (`django.core.cache`) to optimize repeated complex mathematical operations and improve dashboard rendering speeds.
+* **Algorithmic Backtesting Module:**
+    * Evaluates the historical performance of multi-leg strategies including **Straddles**, **Strangle**, and **Butterfly Spreads**.
+    * Calculates and visualizes quantitative metrics: Max Drawdown, Annualized Sharpe Ratio, Win Rate, and Equity Curves.
 
-# Install dependencies
-pip install -r requirements.txt
+## System Architecture
 
-# Run the development server
-python options_dashboard/manage.py runserver
-```
+The application follows a modular, decoupled architecture optimized for quantitative analysis rather than traditional CRUD operations:
+1.  **Data Ingestion Layer:** Reads tick/minute-level options data from static CSV files, eliminating database latency for heavy sequential reads.
+2.  **Controller & Processing (Django Views):** Acts as the API gateway, routing requests to dedicated Python quant modules (`greeks.py`, `iv.py`, `backtest.py`).
+3.  **Algorithmic Engine:** Uses NumPy and Pandas to filter market hours, merge spot prices with derivative prices, and execute vectorized calculations.
+4.  **Presentation Layer:** Asynchronously fetches JSON payloads from the backend to dynamically render data visualizations via Bootstrap and JavaScript without full page reloads.
 
-Visit in your browser:  
-**http://127.0.0.1:8000/**
+## Backtest Performance Summary (Example)
 
-## Features
+| Strategy  | Trades | Win Rate | Total P&L (₹) | Max Drawdown | Ann. Sharpe Ratio |
+|-----------|--------|----------|--------------:|-------------:|------------------:|
+| Straddle  | 11     | 72.73%   | 8,372.50      | -2.45%       | 121.79            |
+| Butterfly | 5      | 80.00%   | 46,000.00     | -0.34%       | 116.04            |
+| Strangle  | 9      | 66.00%   | 23,018.00     | -1.84%       | 119.64            |
 
-### **1. Implied Volatility (IV) Calculator**
-- **Inputs**:  
-  - Risk-Free Rate (%)  
-  - Option Type Filter (All, Calls, Puts)  
-  - Date Range Selection  
-- **Outputs**:  
-  - Interactive IV plot  
-  - Interpretation guide:
-    - Higher IV → Higher expected price movement  
-    - Lower IV → Lower volatility near expiration  
+*(Note: Results are based on historical Nifty 50 data and are for educational purposes, not financial advice.)*
 
-### **2. Options Greeks Calculator**
-Calculates:
-- **Delta** – Sensitivity to underlying price changes  
-- **Gamma** – Sensitivity of Delta to price changes  
-- **Theta** – Time decay of option value  
-- **Vega** – Sensitivity to volatility changes  
-- **Rho** – Sensitivity to interest rate changes  
+## Local Installation & Setup
 
-### **3. Backtesting Module**
-- Strategies: **Straddle**, **Butterfly**, **Strangle**  
-- **Outputs**:
-  - Total trades, wins, win rate  
-  - Final capital & total P&L  
-  - Maximum drawdown  
-  - Annualized Sharpe ratio  
-  - Optional performance graphs  
+### Prerequisites
+* Python 3.9+
+* Git
 
-## Example Results
-
-| Strategy  | Trades | Wins | Win Rate | Final Capital | Total P&L | Max Drawdown | Sharpe Ratio |
-|-----------|--------|------|----------|--------------:|----------:|-------------:|-------------:|
-| Straddle  | 11     | 8    | 72.73%   | 108,372.50    | 8,372.50  | -2.45%       | 121.79       |
-| Butterfly | 5      | 4    | 80%      | 146,000.00    | 46,000.00 | -0.34%       | 116.04       |
-| Strangle  | 9      | 6    | 66%      | 123,018.00    | 23,018.00 | -1.84%       | 119.64       |
-
-## 🛠 How It Works
-
-### **Implied Volatility**
-- Based on **Black–Scholes** option pricing model  
-- Uses `scipy.optimize.brentq` to solve for volatility (σ)  
-- Matches observed market prices to model price  
-
-### **Greeks**
-Derived from Black–Scholes partial derivatives:
-```
-Δ = ∂Price/∂S  
-Γ = ∂²Price/∂S²  
-Θ = ∂Price/∂T  
-Vega = ∂Price/∂σ  
-Rho = ∂Price/∂r
-```
-Implemented using **NumPy** & **SciPy**.
-
-### **Backtesting**
-- Separate Python functions for each strategy  
-- Performance metrics stored in dictionaries  
-- Graphs optionally loaded via **PIL**  
-
-
-
-## Screenshots
-
-| Dashboard View | IV Calculator | Backtesting Results |
-|----------------|--------------|---------------------|
-| ![Dashboard](docs/screenshots/d.png) | ![IV](docs/screenshots/iv.png) | ![Backtest](docs/screenshots/bt.png) |
-
-
-## Troubleshooting
-
-**Error:**  
-`Failed to load IV data: Network response was not ok.`  
-
-**Fix:**  
-- Check your internet connection  
-- Verify the data source/API is active  
-- Open browser console (F12) and inspect logs  
-
-
-## License
-This project is licensed under the terms in the [LICENSE](LICENSE) file.
-
----
-
-
-
-
+### Step-by-Step Guide
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/Garvit423/options-fiesta.git](https://github.com/Garvit423/options-fiesta.git)
+   cd options-fiesta

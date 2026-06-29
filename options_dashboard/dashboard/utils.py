@@ -5,7 +5,7 @@ from pathlib import Path
 
 # Update this path to match your current project structure
 print("Current director:",Path(__file__).resolve())
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 DATA_DIR = BASE_DIR / "12Dec-Nifty/"
 SPOT_CSV = BASE_DIR / "nifty_underlying.csv"
