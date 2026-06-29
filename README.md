@@ -50,3 +50,39 @@ The application follows a modular, decoupled architecture optimized for quantita
    ```bash
    git clone [https://github.com/Garvit423/options-fiesta.git](https://github.com/Garvit423/options-fiesta.git)
    cd options-fiesta
+   ```
+
+2. **Create and activate a virtual environment:**
+   ```bash
+   # macOS/Linux
+   python3 -m venv venv
+   source venv/bin/activate
+   
+   # Windows
+   python -m venv venv
+   venv\Scripts\activate
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Navigate to the core application directory:**
+   ```bash
+   cd options_dashboard
+   ```
+
+5. **Start the development server:**
+   ```bash
+   python manage.py runserver
+   ```
+6. **Access the dashboard:** Open your browser and navigate to `http://127.0.0.1:8000/`.
+
+## Troubleshooting
+
+**Error:** `FileNotFoundError: [Errno 2] No such file or directory: './12Dec-Nifty'`  
+**Fix:** The analytics engine requires local data files to run. Ensure that the `12Dec-Nifty` data folder and the `nifty_underlying.csv` file are located directly inside the inner `options_dashboard` directory (at the same level as `manage.py`).
+
+<!-- ## License
+This project is licensed under the terms in the [LICENSE](LICENSE) file. -->
